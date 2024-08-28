@@ -1,0 +1,47 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<div class="product-detail">
+    <div class="product-image">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+        {% else %}
+            <img src="{% static 'images/default.jpg' %}" alt="Default Image" class="product-img">
+        {% endif %}
+    </div>
+    <div class="product-info">
+        <h1 class="product-name">{{ product.name }}</h1>
+        <div class="product-price">${{ product.price }}</div>
+        <p class="product-description">{{ product.description }}</p>
+        <button data-product="{{ product.id }}" data-action="add" class="add-to-cart-btn">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+        </button>
+    </div>
+</div>
+
+<div class="product-reviews">
+    <h2>Reviews</h2>
+    {% if reviews %}
+        <ul class="review-list">
+            {% for review in reviews %}
+                <li class="review-item">
+                    <p><strong>{{ review.user }}:</strong> {{ review.review }}</p>
+                    <p>Sentiment: {{ review.sentiment }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+</div>
+
+<div class="add-review">
+    <h3>Leave a Review</h3>
+    <form action="{% url 'add_review' product.id %}" method="POST">
+        {% csrf_token %}
+        <textarea name="review" rows="4" required></textarea>
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <button type="submit">Submit Review</button>
+    </form>
+</div>
+{% endblock content %}
